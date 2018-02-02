@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "setwd(\"F:\\\\R-program\\\\R-BW\\\\BlueWater\")\n#pn=13      #the number of params\n\n#inpute and base settings\n#PARAM=matrix(scan(\"param.prn\"),pn,1,byrow=TRUE)  #the params of model\ndn=3287        #the number of days\ngn=311        #the number of grids\nsubuhsn=4    #how many time step have on one day \nsubuhbn=2\ndrn=21       #the rows number of FLOWDRIC \ndcn=35       #the clows number of FLOWDRIC \ncro=13       #the order row of hydro station\ncco=32       #the order clow of hydro station\nso=6       #the clow order of surfaceflow from VIC\nbo=7      #the clow order of baseflow from VIC\nrunrn=3287    #the rows number of RUNOFF files\nruncn=25    #the clows number of RUNOFF files\ncheck=\"output\\\\check.txt\"\nFLOWDRIC=matrix(scan(\"input\\\\cuntanDir.txt\"),drn,dcn,byrow=TRUE)  #the direction of flow, in order to get the UHS and UHB of different grids\nGRIDID=matrix(scan(\"input\\\\cuntanID.txt\"),drn,dcn,byrow=TRUE)  #the ID of grid\nFTGID=matrix(0,gn,2)\nACLT=diag(gn)  #acculate \nBWname=\"output\\\\bw.txt\"\nRUNOFF=matrix(,dn,gn)       #the surfaceflow from VIC \nDSCG=matrix(,dn,gn)\nQall=matrix(,dn,1)\nRb=matrix(,dn,1)\nBW=matrix(,dn,gn)  #daily blue water resource\nRUNOFFNAME=c()\nRUNOFFNAMEE<-read.table(\"input\\\\fluxesname.txt\",sep=\" \")    #the files names of runoff from VIC\nfor(i in 1:gn)RUNOFFNAME[i]=as.character(RUNOFFNAMEE[i,1])    #the character form in R about files names of runoff from VIC\nsetwd(\"F:\\\\Cuntan2017\\\\vic_result\")\n#get the information of surfaceflow and baseflow\nfor(j in 1:gn){\n  RUNTEM=read.table(RUNOFFNAME[j],sep=\" \")\n  RUNOFF[,j]=RUNTEM[,so]+RUNTEM[,bo]\n}\nj=0\n##find the father grid\n#############make sure that the oder is same with runoffname########\ni=1\nfor(m in 1:dcn){\n  for(l in 1:drn){\n    #find the way to station\t\n    judge=FLOWDRIC[l,m]\n    if((judge!=-9999)){\n      FTGID[i,1]=GRIDID[l,m]\n      f=FLOWDRIC[l,m]\n      if(f==1) {\n        j=l-1\n        k=m\n      }\n      if(f==2) {\n        j=l-1\n        k=m+1\n      }\n      if(f==3) {\n        k=m+1\n        j=l\n      }\n      if(f==4) {\n        j=l+1\n        k=m+1\n      }\n      if(f==5) {\n        j=l+1\n        k=m\n      }\n      if(f==6) {\n        j=l+1\n        k=m-1\n      }\n      if(f==7) {\n        k=m-1\n        j=l\n      }\n      if(f==8) {\n        j=l-1\n        k=m-1\n      }\n      FTGID[i,2]=GRIDID[j,k]\n      if(l==cro&m==cco) FTGID[i,2]=0\n      i=i+1\n    }\n  }\n}\nfor(k in 1:gn){\n  l=k\n  while(FTGID[l,2]!=0) {\n    tem1=FTGID[l,1]\n    tem2=FTGID[l,2]\n    ACLT[k,tem2]=1\n    l=tem2\n  }\n}\n\nRb=rowSums(RUNOFF,na.rm = FALSE, dims = 1)\nDSCG=RUNOFF%*%ACLT\nQall=rowSums(DSCG,na.rm = FALSE, dims = 1)\nfor(i in 1:dn){\n  BW[i,]=DSCG[i,]*Rb[i]/Qall[i]\n}\n\n\nsetwd(\"F:\\\\R-program\\\\R-BW\\\\BlueWater\")\nwrite.table(BW,BWname,row.names = F,col.names = F)\nwrite.table(FTGID,check,row.names = F,col.names = F)\n\n",
+    "created" : 1517553506403.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1292791152",
+    "id" : "75D90E7A",
+    "lastKnownWriteTime" : 1517553448,
+    "last_content_update" : 1517553448,
+    "path" : "F:/R-program/R-BW/BlueWater/Rcode/acculate.R",
+    "project_path" : "Rcode/acculate.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

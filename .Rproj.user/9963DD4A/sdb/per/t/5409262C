@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#the pretation for route including dem,slope,step,area \nsetwd(\"F:\\R-program\\R-BW\\BlueWater\")\ngn=311        #the number of grids\ndrn=21       #the rows number of FLOWDRIC \ndcn=35       #the clows number of FLOWDRIC \ncro=13       #the order row of hydro station\ncco=32       #the order clow of hydro station\nOUT=\"input\\\\acculate.txt\"\ncheck=\"output\\\\check.txt\"\nFLOWDRIC=matrix(scan(\"input\\\\cuntanDir.txt\"),drn,dcn,byrow=TRUE)  #the direction of flow, in order to get the UHS and UHB of different grids\nGRIDID=matrix(scan(\"input\\\\cuntanID.txt\"),drn,dcn,byrow=TRUE)  #the ID of grid\nFTGID=matrix(0,gn,2)\nACLT=diag(gn)  #acculate \n##find the father grid\n#############make sure that the oder is same with runoffname########\ni=1\nfor(m in 1:dcn){\n  for(l in 1:drn){\n    #find the way to station\t\n    judge=FLOWDRIC[l,m]\n    if((judge!=-9999)){\n      FTGID[i,1]=GRIDID[l,m]\n      f=FLOWDRIC[l,m]\n      if(f==1) {\n        j=l-1\n        k=m\n      }\n      if(f==2) {\n        j=l-1\n        k=m+1\n      }\n      if(f==3) {\n        k=m+1\n        j=l\n      }\n      if(f==4) {\n        j=l+1\n        k=m+1\n      }\n      if(f==5) {\n        j=l+1\n        k=m\n      }\n      if(f==6) {\n        j=l+1\n        k=m-1\n      }\n      if(f==7) {\n        k=m-1\n        j=l\n      }\n      if(f==8) {\n        j=l-1\n        k=m-1\n      }\n      FTGID[i,2]=GRIDID[j,k]\n      if(l==cro&m==cco) FTGID[i,2]=0\n      i=i+1\n    }\n  }\n}\nfor(k in 1:gn){\n  l=k\n  while(FTGID[l,2]!=0) {\n    tem1=FTGID[l,1]\n    tem2=FTGID[l,2]\n    ACLT[k,tem2]=1\n    l=tem2\n  }\n}\nwrite.table(ACLT,OUT,row.names = F,col.names = F)\nwrite.table(FTGID,check,row.names = F,col.names = F)\n",
+    "created" : 1517553511765.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2195773089",
+    "id" : "5409262C",
+    "lastKnownWriteTime" : 1517553452,
+    "last_content_update" : 1517553452,
+    "path" : "F:/R-program/R-BW/BlueWater/Rcode/pretation.R",
+    "project_path" : "Rcode/pretation.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
